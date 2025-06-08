@@ -12,7 +12,8 @@ SECRET_KEY = 'django-insecure-w-h!btx5q0^7oziy7-*s5(owe%pemqw4ph8w%5k006l1qu8xcx
 
 DEBUG = True
 
-ALLOWED_HOSTS = ['essentialthreads-backend.onrender.com']
+ALLOWED_HOSTS = ['essentialthreads-backend.onrender.com', 'localhost', '127.0.0.1']
+
 
 
 
