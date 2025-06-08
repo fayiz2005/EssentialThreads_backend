@@ -131,8 +131,8 @@ def submit_order(request):
                 payment_method_types=['card'],
                 line_items=line_items,
                 mode='payment',
-                success_url='http://localhost:8000/api/success?session_id={CHECKOUT_SESSION_ID}',
-                cancel_url='http://localhost:8000/api/cancel/',
+                success_url='https://essentialthreads-backend.onrender.com/api/success?session_id={CHECKOUT_SESSION_ID}',
+                cancel_url='https://essentialthreads-backend.onrender.com/api/cancel/',
                 metadata={
                     'order_id': order_id,
                 }
@@ -165,8 +165,8 @@ def submit_order(request):
                     "custom_id": order_id
                 }],
                 "application_context": {
-                    "return_url": "http://localhost:8000/api/paypal-capture",
-                    "cancel_url": "http://localhost:8000/api/cancel/"
+                    "return_url": "https://essentialthreads-backend.onrender.com/api/paypal-capture",
+                    "cancel_url": "https://essentialthreads-backend.onrender.com/api/cancel/"
                 }
             }
 
