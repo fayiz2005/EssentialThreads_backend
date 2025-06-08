@@ -12,7 +12,14 @@ SECRET_KEY = 'django-insecure-w-h!btx5q0^7oziy7-*s5(owe%pemqw4ph8w%5k006l1qu8xcx
 
 DEBUG = True
 
-ALLOWED_HOSTS = ['essentialthreads-backend.onrender.com', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = [
+    'essentialthreads-backend.onrender.com', 
+    'localhost', 
+    '127.0.0.1', 
+    '0.0.0.0', 
+    '.ngrok-free.app',
+]
+
 
 
 
@@ -115,4 +122,3 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0', '.ngrok-free.app']
