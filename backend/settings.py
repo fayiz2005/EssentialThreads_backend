@@ -34,7 +34,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'store',
-    'corsheaders',
 ]
 
 STRIPE_PUBLISHABLE_KEY = 'pk_test_51RTSVv4ERU9xOMUAKNWyazOz2R6y09usbqHtYWdz7x5x6aKMuzoCppHUVrPfhOs8TAPrKeLVzzGJ2aslS6zzoFOd00xfhSUT2V'  
@@ -47,7 +46,6 @@ PAYPAL_CLIENT_SECRET='EGIvbiQQRMbtqrsLViGQ-YmLk02dXZMyadgBZN-RWtkzyVZgihRL_pfmxI
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    "corsheaders.middleware.CorsMiddleware",
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
