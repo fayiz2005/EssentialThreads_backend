@@ -86,7 +86,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     'http://127.0.0.1:4040',
     'https://a13b-103-230-62-0.ngrok-free.app',
-    "https://your-netlify-site.netlify.app"
+    "https://essentialthreads-frontend.onrender.com"
 ]
 
 
@@ -107,7 +107,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 CORS_ORIGIN_WHITELIST = [
-    "https://essentialthreads.netlify.app",
+    "https://essentialthreads-frontend.onrender.com",
 ]
 
 LANGUAGE_CODE = 'en-us'
