@@ -12,7 +12,12 @@ SECRET_KEY = 'django-insecure-w-h!btx5q0^7oziy7-*s5(owe%pemqw4ph8w%5k006l1qu8xcx
 
 DEBUG = os.environ.get("DEBUG", "True") == "True"
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'https://essentialthreads.netlify.app/', "http://localhost:3000", ]
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    'essentialthreads.netlify.app',   
+    'essentialthreads-backend.onrender.com',
+]
 
 
 
@@ -87,13 +92,9 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:3000",
     "http://localhost:8000",
     "http://127.0.0.1:8000",
-    "https://https://essentialthreads.netlify.app/",
+    "https://essentialthreads.netlify.app",
 ]
 
-CORS_ORIGIN_WHITELIST = [
-    "http://localhost:3000",
-    "https://https://essentialthreads.netlify.app/",
-]
 
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -111,9 +112,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-CORS_ORIGIN_WHITELIST = [
-    "https://essentialthreads-frontend.onrender.com",
-]
 
 LANGUAGE_CODE = 'en-us'
 
