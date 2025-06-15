@@ -1,6 +1,6 @@
 from pathlib import Path
 import os
-import dj_database_url
+
 
 
 
@@ -10,15 +10,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'django-insecure-w-h!btx5q0^7oziy7-*s5(owe%pemqw4ph8w%5k006l1qu8xcx'
 
-DEBUG = True
+DEBUG = os.environ.get("DEBUG", "True") == "True"
 
-ALLOWED_HOSTS = [
-    'essentialthreads-backend.onrender.com', 
-    'localhost', 
-    '127.0.0.1', 
-    '0.0.0.0', 
-    '.ngrok-free.app',
-]
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'essential-threads-frontend.vercel.app', "http://localhost:3000", ]
 
 
 
@@ -46,14 +40,14 @@ PAYPAL_CLIENT_SECRET='EGIvbiQQRMbtqrsLViGQ-YmLk02dXZMyadgBZN-RWtkzyVZgihRL_pfmxI
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',  
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
-    'django.middleware.common.CommonMiddleware',
 ]
+
 
 ROOT_URLCONF = 'backend.urls'
 
@@ -77,19 +71,29 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 
 
 
-DATABASES={
-    "default":dj_database_url.parse(os.environ.get("DATABASE_URL"))
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'essentialThreads',
+        'USER': 'postgres',
+        'PASSWORD': 'newpassword',
+        'HOST': 'localhost',
+        'PORT': '5432',
+    }
 }
-
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
-    'http://127.0.0.1:4040',
-    'https://a13b-103-230-62-0.ngrok-free.app',
-    "https://your-netlify-site.netlify.app",
-    "https://essentialthreads.netlify.app",
+    "http://127.0.0.1:3000",
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
+    "https://essential-threads-frontend.vercel.app",
 ]
 
+CORS_ORIGIN_WHITELIST = [
+    "http://localhost:3000",
+    "https://essential-threads-frontend.vercel.app",
+]
 
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -107,6 +111,9 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+CORS_ORIGIN_WHITELIST = [
+    "https://essentialthreads-frontend.onrender.com",
+]
 
 LANGUAGE_CODE = 'en-us'
 
@@ -117,9 +124,11 @@ USE_I18N = True
 USE_TZ = True
 
 
-STATIC_URL = 'static/'
-MEDIA_URL = '/media/' 
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles') 
+MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
