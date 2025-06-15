@@ -12,7 +12,7 @@ SECRET_KEY = 'django-insecure-w-h!btx5q0^7oziy7-*s5(owe%pemqw4ph8w%5k006l1qu8xcx
 
 DEBUG = os.environ.get("DEBUG", "True") == "True"
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'essential-threads-frontend.vercel.app', "http://localhost:3000", ]
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'https://essentialthreads.netlify.app/', "http://localhost:3000", ]
 
 
 
@@ -87,12 +87,12 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:3000",
     "http://localhost:8000",
     "http://127.0.0.1:8000",
-    "https://essential-threads-frontend.vercel.app",
+    "https://https://essentialthreads.netlify.app/",
 ]
 
 CORS_ORIGIN_WHITELIST = [
     "http://localhost:3000",
-    "https://essential-threads-frontend.vercel.app",
+    "https://https://essentialthreads.netlify.app/",
 ]
 
 
