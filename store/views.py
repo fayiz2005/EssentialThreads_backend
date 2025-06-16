@@ -297,6 +297,44 @@ def stripe_webhook(request):
         logger.error(f"Unexpected error: {str(e)}")
         return HttpResponseBadRequest("Webhook error")
 
-    logger.debug(f"Event data: {event}")
+    # Handle checkout session completed event
+    if event['type'] == 'checkout.session.completed':
+        session = event['data']['object']
+        order_id = session.get('metadata', {}).get('order_id')
+
+        if not order_id:
+            logger.error('Order ID missing in session metadata.')
+            return HttpResponseBadRequest("Missing order ID")
+
+        cached_order = cache.get(order_id)
+        if not cached_order:
+            logger.error(f"No cached order data found for order_id: {order_id}")
+            return HttpResponseBadRequest("Order data not found")
+
+        try:
+            # Use cached data to save order
+            save_data(
+                first_name=cached_order['first_name'],
+                last_name=cached_order['last_name'],
+                country=cached_order['country'],
+                state=cached_order['state'],
+                address=cached_order['address'],
+                city=cached_order['city'],
+                postal_code=cached_order['postal_code'],
+                payment_method="Credit Card",
+                total_price=Decimal(cached_order['total_price']),
+                items=cached_order['items'],
+                order_id=order_id
+            )
+            logger.info(f"Order saved successfully for order_id: {order_id}")
+            # Optionally clear cache if no longer needed
+            cache.delete(order_id)
+
+        except Exception as e:
+            logger.error(f"Failed to save order data: {e}")
+            return HttpResponse(status=500)
+
+    else:
+        logger.info(f"Unhandled event type: {event['type']}")
 
     return HttpResponse(status=200)
