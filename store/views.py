@@ -16,6 +16,7 @@ import logging
 import uuid
 from django.core.cache import cache
 from rest_framework.generics import RetrieveAPIView
+from django.http import HttpResponse, HttpResponseBadRequest
 logger = logging.getLogger(__name__)
 
 
@@ -266,59 +267,26 @@ def paypal_capture(request):
 
 @csrf_exempt
 def stripe_webhook(request):
-    logger.info("🔥 Stripe webhook received")
-    logger.debug("Headers: %s", request.META)
-    logger.debug("Payload: %s", request.body.decode())
+    if request.method != "POST":
+        return HttpResponse(status=405)  # Method Not Allowed
 
     payload = request.body
     sig_header = request.META.get('HTTP_STRIPE_SIGNATURE')
     endpoint_secret = settings.STRIPE_WEBHOOK_SECRET
 
+    if sig_header is None:
+        return HttpResponseBadRequest("Missing Stripe-Signature header")
+
     try:
-        event = stripe.Webhook.construct_event(payload, sig_header, endpoint_secret)
-    except ValueError as e:
-        logger.error(f"⚠️ Invalid payload: {e}")
-        return HttpResponse(status=400)
-    except stripe.error.SignatureVerificationError as e:
-        logger.error(f"❌ Signature verification failed: {e}")
-        return HttpResponse(status=400)
+        event = stripe.Webhook.construct_event(
+            payload, sig_header, endpoint_secret
+        )
+    except ValueError:
+        return HttpResponseBadRequest("Invalid payload")
+    except stripe.error.SignatureVerificationError:
+        return HttpResponseBadRequest("Invalid signature")
 
-    if event['type'] == 'checkout.session.completed':
-        session = event['data']['object']
-        logger.info("✅ Checkout session completed.")
-        logger.debug("Session object: %s", session)
-
-        order_id = session['metadata'].get('order_id')
-        if not order_id:
-            logger.error("❗ Missing order_id in Stripe session metadata")
-            return HttpResponse(status=400)
-
-        cached_order = cache.get(order_id)
-        if not cached_order:
-            logger.error(f"❗ Order data not found in cache for order_id: {order_id}")
-            return HttpResponse("Order data not found in cache", status=400)
-
-        try:
-            save_data(
-                first_name=cached_order['first_name'],
-                last_name=cached_order['last_name'],
-                country=cached_order['country'],
-                state=cached_order['state'],
-                address=cached_order['address'],
-                city=cached_order['city'],
-                postal_code=cached_order['postal_code'],
-                payment_method="Credit Card",
-                total_price=Decimal(cached_order['total_price']),
-                items=cached_order['items'],
-                order_id=order_id
-            )
-            cache.delete(order_id)
-            logger.info(f"✅ Order {order_id} saved and cache cleared.")
-        except Exception as e:
-            logger.error(f"❌ Failed to save order data: {e}")
-            return HttpResponse(f"Failed to save order data: {e}", status=500)
+    # Process the event here
+    print(f"Received Stripe event: {event['type']}")
 
     return HttpResponse(status=200)
-
-
-
