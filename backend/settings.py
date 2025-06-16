@@ -1,8 +1,9 @@
 from pathlib import Path
 import os
 from dotenv import load_dotenv
+import dj_database_url  
 
-
+load_dotenv()  
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -17,7 +18,7 @@ ALLOWED_HOSTS = [
     '127.0.0.1',
     'essentialthreads.netlify.app',   
     'essentialthreads-backend.onrender.com',
-    '7536-103-230-62-3.ngrok-free.app',
+
 ]
 
 
@@ -78,14 +79,11 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'essentialThreads',
-        'USER': 'postgres',
-        'PASSWORD': 'newpassword',
-        'HOST': 'localhost',
-        'PORT': '5432',
-    }
+    'default': dj_database_url.config(
+        default=os.getenv("DATABASE_URL"),
+        conn_max_age=600,
+        ssl_require=True
+    )
 }
 
 CORS_ALLOWED_ORIGINS = [
@@ -94,7 +92,6 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:8000",
     "http://127.0.0.1:8000",
     "https://essentialthreads.netlify.app",
-    "https://7536-103-230-62-3.ngrok-free.app",
 ]
 
 
