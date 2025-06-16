@@ -263,30 +263,39 @@ def paypal_capture(request):
 
     return HttpResponse("Payment capture failed", status=400)
 
+
 @csrf_exempt
 def stripe_webhook(request):
-    print("Webhook received")
+    logger.info("🔥 Stripe webhook received")
+    logger.debug("Headers: %s", request.META)
+    logger.debug("Payload: %s", request.body.decode())
+
     payload = request.body
     sig_header = request.META.get('HTTP_STRIPE_SIGNATURE')
     endpoint_secret = settings.STRIPE_WEBHOOK_SECRET
 
     try:
         event = stripe.Webhook.construct_event(payload, sig_header, endpoint_secret)
-    except ValueError:
+    except ValueError as e:
+        logger.error(f"⚠️ Invalid payload: {e}")
         return HttpResponse(status=400)
-    except stripe.error.SignatureVerificationError:
+    except stripe.error.SignatureVerificationError as e:
+        logger.error(f"❌ Signature verification failed: {e}")
         return HttpResponse(status=400)
 
     if event['type'] == 'checkout.session.completed':
         session = event['data']['object']
+        logger.info("✅ Checkout session completed.")
+        logger.debug("Session object: %s", session)
+
         order_id = session['metadata'].get('order_id')
         if not order_id:
-            logger.error("Missing order_id in Stripe session metadata")
+            logger.error("❗ Missing order_id in Stripe session metadata")
             return HttpResponse(status=400)
 
         cached_order = cache.get(order_id)
         if not cached_order:
-            logger.error(f"Order data not found in cache for order_id: {order_id}")
+            logger.error(f"❗ Order data not found in cache for order_id: {order_id}")
             return HttpResponse("Order data not found in cache", status=400)
 
         try:
@@ -304,10 +313,12 @@ def stripe_webhook(request):
                 order_id=order_id
             )
             cache.delete(order_id)
+            logger.info(f"✅ Order {order_id} saved and cache cleared.")
         except Exception as e:
-            logger.error(f"Failed to save order data: {e}")
+            logger.error(f"❌ Failed to save order data: {e}")
             return HttpResponse(f"Failed to save order data: {e}", status=500)
 
     return HttpResponse(status=200)
+
 
 
