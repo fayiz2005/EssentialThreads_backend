@@ -9,9 +9,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 
-SECRET_KEY = 'django-insecure-w-h!btx5q0^7oziy7-*s5(owe%pemqw4ph8w%5k006l1qu8xcx'
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 DEBUG = os.environ.get("DEBUG", "True") == "True"
+
+
 
 ALLOWED_HOSTS = [
     'localhost',
@@ -37,12 +39,12 @@ INSTALLED_APPS = [
     'store',
 ]
 
-STRIPE_PUBLISHABLE_KEY = 'pk_test_51RTSVv4ERU9xOMUAKNWyazOz2R6y09usbqHtYWdz7x5x6aKMuzoCppHUVrPfhOs8TAPrKeLVzzGJ2aslS6zzoFOd00xfhSUT2V'  
-STRIPE_SECRET_KEY = 'sk_test_51RTSVv4ERU9xOMUAp8yi8jKFLs54koDCzJEfOSK6TswyVebsleSjHskmSuinqqp9U20Lz2IuwG8g0U1A19JEXIv500AX59KjfI'      
-STRIPE_WEBHOOK_SECRET ='whsec_IQ1Zi0GkM5OKzBRlpU0bq15ddGT9CztT' 
+STRIPE_PUBLISHABLE_KEY = os.environ.get("STRIPE_PUBLISHABLE_KEY")
+STRIPE_SECRET_KEY = os.environ.get("STRIPE_SECRET_KEY")
+STRIPE_WEBHOOK_SECRET = os.environ.get("STRIPE_WEBHOOK_SECRET")
 
-PAYPAL_CLIENT_ID='AQGPxvo3Xf0SQcxSSdBiEBLn7N_dKXOWW7JTwVZR-Fz1FMr1yv2i57LmF8YlxWTzGUq55rwORX0g7-vJ'
-PAYPAL_CLIENT_SECRET='EGIvbiQQRMbtqrsLViGQ-YmLk02dXZMyadgBZN-RWtkzyVZgihRL_pfmxI37S2WyyFK2JsSOl-NGyR-N'
+PAYPAL_CLIENT_ID = os.environ.get("PAYPAL_CLIENT_ID")
+PAYPAL_CLIENT_SECRET = os.environ.get("PAYPAL_CLIENT_SECRET")
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
