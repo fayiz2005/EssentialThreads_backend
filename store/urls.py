@@ -7,7 +7,7 @@ urlpatterns = [
     path('products/<int:pk>/', views.ProductDetail.as_view(), name='product-detail'),
     path('categories/', views.CategoryList.as_view(), name='category-list'),
     path('submit-order/', views.submit_order, name='submit-order'),
-    path('stripe/webhook/', views.stripe_webhook, name='stripe-webhook'),
+    path('stripe_webhook/', views.stripe_webhook),
     path('paypal-capture/', views.paypal_capture, name='paypal-capture'),
     path('success/', views.success, name='success'),
     path('cancel/', views.cancel, name='cancel'),

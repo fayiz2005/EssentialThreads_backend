@@ -17,6 +17,7 @@ import uuid
 from django.core.cache import cache
 from rest_framework.generics import RetrieveAPIView
 from django.http import HttpResponse, HttpResponseBadRequest
+import os
 logger = logging.getLogger(__name__)
 
 
@@ -275,7 +276,7 @@ def stripe_webhook(request):
 
     payload = request.body
     sig_header = request.META.get('HTTP_STRIPE_SIGNATURE')
-    endpoint_secret = settings.STRIPE_WEBHOOK_SECRET
+    endpoint_secret = os.environ.get("STRIPE_WEBHOOK_SECRET")
 
     if sig_header is None:
         logger.error('Missing Stripe-Signature header.')
