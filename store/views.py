@@ -267,26 +267,35 @@ def paypal_capture(request):
 
 @csrf_exempt
 def stripe_webhook(request):
+    logger.debug('Webhook endpoint called.')
+
     if request.method != "POST":
-        return HttpResponse(status=405)  # Method Not Allowed
+        logger.warning(f'Invalid request method: {request.method}')
+        return HttpResponse(status=405)
 
     payload = request.body
     sig_header = request.META.get('HTTP_STRIPE_SIGNATURE')
     endpoint_secret = settings.STRIPE_WEBHOOK_SECRET
 
     if sig_header is None:
+        logger.error('Missing Stripe-Signature header.')
         return HttpResponseBadRequest("Missing Stripe-Signature header")
 
     try:
         event = stripe.Webhook.construct_event(
             payload, sig_header, endpoint_secret
         )
-    except ValueError:
+        logger.info(f"Stripe event received: {event['type']}")
+    except ValueError as e:
+        logger.error(f"Invalid payload: {str(e)}")
         return HttpResponseBadRequest("Invalid payload")
-    except stripe.error.SignatureVerificationError:
+    except stripe.error.SignatureVerificationError as e:
+        logger.error(f"Signature verification failed: {str(e)}")
         return HttpResponseBadRequest("Invalid signature")
+    except Exception as e:
+        logger.error(f"Unexpected error: {str(e)}")
+        return HttpResponseBadRequest("Webhook error")
 
-    # Process the event here
-    print(f"Received Stripe event: {event['type']}")
+    logger.debug(f"Event data: {event}")
 
     return HttpResponse(status=200)
