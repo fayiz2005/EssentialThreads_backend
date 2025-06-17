@@ -1,7 +1,9 @@
 from pathlib import Path
 import os
 from dotenv import load_dotenv
-import dj_database_url  
+import dj_database_url
+import cloudinary
+  
 
 load_dotenv()  
 
@@ -41,11 +43,22 @@ INSTALLED_APPS = [
     'store',
 ]
 
+CLOUDINARY_CLOUD_NAME = os.environ.get('CLOUDINARY_CLOUD_NAME')
+CLOUDINARY_API_KEY = os.environ.get('CLOUDINARY_API_KEY')
+CLOUDINARY_API_SECRET = os.environ.get('CLOUDINARY_API_SECRET')
+
 CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME'),
-    'API_KEY': os.environ.get('CLOUDINARY_API_KEY'),
-    'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET'),
+    'CLOUD_NAME': CLOUDINARY_CLOUD_NAME,
+    'API_KEY': CLOUDINARY_API_KEY,
+    'API_SECRET': CLOUDINARY_API_SECRET,
 }
+
+cloudinary.config(
+    cloud_name=CLOUDINARY_CLOUD_NAME,
+    api_key=CLOUDINARY_API_KEY,
+    api_secret=CLOUDINARY_API_SECRET
+)
+
 
 STRIPE_PUBLISHABLE_KEY = os.environ.get("STRIPE_PUBLISHABLE_KEY")
 STRIPE_SECRET_KEY = os.environ.get("STRIPE_SECRET_KEY")
@@ -133,7 +146,8 @@ USE_TZ = True
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles') 
-MEDIA_URL = f'https://res.cloudinary.com/{os.environ.get("CLOUDINARY_CLOUD_NAME")}/media/'
+MEDIA_URL = f'https://res.cloudinary.com/{CLOUDINARY_CLOUD_NAME}/image/upload/'
+
 
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
