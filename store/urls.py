@@ -11,4 +11,5 @@ urlpatterns = [
     path('paypal-capture/', views.paypal_capture, name='paypal-capture'),
     path('success/', views.success, name='success'),
     path('cancel/', views.cancel, name='cancel'),
+    path('api/create-product/', views.create_product),
 ]

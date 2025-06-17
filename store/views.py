@@ -18,7 +18,37 @@ from django.core.cache import cache
 from rest_framework.generics import RetrieveAPIView
 from django.http import HttpResponse, HttpResponseBadRequest
 import os
+import cloudinary.uploader
+from rest_framework.decorators import api_view, parser_classes
+from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.response import Response
+from rest_framework import status
 logger = logging.getLogger(__name__)
+
+
+@api_view(['POST'])
+@parser_classes([MultiPartParser, FormParser])
+def create_product(request):
+    try:
+        # Upload image to Cloudinary
+        image_file = request.FILES.get('image')
+        upload_result = cloudinary.uploader.upload(image_file, folder="products")
+        image_url = upload_result['secure_url']
+
+        # Create the product
+        product = Product.objects.create(
+            name=request.data.get('name'),
+            description=request.data.get('description'),
+            price=request.data.get('price'),
+            stock=request.data.get('stock'),
+            category_id=request.data.get('category_id'),
+            image=image_url,
+        )
+
+        return Response({'message': 'Product created successfully'}, status=status.HTTP_201_CREATED)
+
+    except Exception as e:
+        return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
 def home(request):

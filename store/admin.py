@@ -1,5 +1,19 @@
 from django.contrib import admin
 from .models import Order, OrderItem, Product, Category, Customer
+import cloudinary.uploader
+
+class ProductAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name', 'price', 'stock', 'category')
+    
+    def save_model(self, request, obj, form, change):
+        if request.FILES.get('image'):
+            result = cloudinary.uploader.upload(
+                request.FILES['image'],
+                folder='products'
+            )
+            obj.image = result['secure_url']
+        super().save_model(request, obj, form, change)
+        
 
 class OrderItemInline(admin.TabularInline):
     model = OrderItem
